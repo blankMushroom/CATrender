@@ -15,7 +15,69 @@ public class Render {
     }
 
     //Стоит начать с этого
-    public static void renderLine(BufferedImage img, int x1, int y1, int x2, int y2, int color){
-
+    public static void renderLine(BufferedImage img, int x1, int y1, int x2, int y2, int rgb){
+        int dx = Math.abs(x2 - x1);
+        int dy = Math.abs(y2 - y1);
+        if (dx >= dy) {
+            if (x2 < x1) {
+                int tx = x1;
+                x1 = x2;
+                x2 = tx;
+                int ty = y1;
+                y1 = y2;
+                y2 = ty;
+            }
+            int dirY = (int) Math.signum(y2 - y1);
+            int error = 0;
+            int dError = dy;
+            int y = y1;
+            for (int x = x1; x <= x2; x++) {
+                img.setRGB(x, y, rgb);
+                error += dError;
+                if ((error << 1) >= dx) {
+                    y += dirY;
+                    error -= dx;
+                }
+            }
+        } else {
+            if (y2 < y1) {
+                int tx = x1;
+                x1 = x2;
+                x2 = tx;
+                int ty = y1;
+                y1 = y2;
+                y2 = ty;
+            }
+            int dirX = (int) Math.signum(x2 - x1);
+            int error = 0;
+            int dError = dx;
+            int x = x1;
+            for (int y = y1; y <= y2; y++) {
+                img.setRGB(x, y, rgb);
+                error += dError;
+                if (error << 1 >= dy) {
+                    x += dirX;
+                    error -= dy;
+                }
+            }
+        }
+    }
+    public static boolean isintriangle(double x1,double x2,double x3,double x4,double y1,double y2,double y3,double y4){
+        double u=-(x1*y3-x3*y1+x4*y1-x1*y4+x3*y4-x4*y3)/(x2*y3-x3*y2+x3*y1-x1*y3+x1*y2-x2*y1);
+        double v=-(x2*y1-x1*y2+x1*y4-x4*y1+x4*y2-x2*y4)/(x2*y3-x3*y2+x3*y1-x1*y3+x1*y2-x2*y1);
+        return v >= 0 & u >= 0 & v + u <= 1;
+    }
+    public static void rendertrialngle(BufferedImage img, int rgb,int x1, int y1, int x2, int y2, int x3, int y3){
+        int minx=Math.min(x1,Math.min(x2,x3));
+        int maxx=Math.max(x1,Math.max(x2,x3));
+        int miny=Math.min(y1,Math.min(y2,y3));
+        int maxy=Math.max(y1,Math.max(y2,y3));
+        for (int i = minx; i <= maxx; i++) {
+            for (int j = miny; j <= maxy; j++) {
+                if(isintriangle(x1,x2,x3,i,y1,y2,y3,j)){
+                    img.setRGB(i, j, rgb);
+                }
+            }
+        }
     }
 }

@@ -21,7 +21,19 @@ public class Main extends JFrame {
         //Создаем буффер в который рисуем кадр.
         BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         //Рисуем кадр.
-        Render.render(img);
+        //Render.render(img);
+        //Render.rendertrialngle(img,Color.BLACK.getRGB(),360,600,350,200,370,220);
+        int x0=100;
+        int y0=100;
+        int r=70;
+        int x1=170;
+        int y1=100;
+        int imax=3;
+        for (int i = 0; i < imax; i++) {
+            Render.rendertrialngle(img,Color.BLACK.getRGB(),x0,y0,x1,y1, (int) (x1+Math.cos((2*Math.PI)/imax)*r),(int) (y1+Math.sin((2*Math.PI)/imax)*r));
+            x1=(int) (x1+Math.cos((2*Math.PI)/imax)*r);
+            y1=(int) (y1+Math.sin((2*Math.PI)/imax)*r);
+        }
         g.drawImage(img, 0, 0, null);
     }
 
