@@ -38,7 +38,8 @@ public class Main extends JFrame {
             y1=Math.sqrt(1-i*i);
             y2=-Math.sqrt(1-i*i);
         }*/
-        Render.renderobj(img,Color.BLACK.getRGB());
+        Color c=new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255));
+        Render.renderobj(img,c.getRGB());
         g.drawImage(img, 0, 0, null);
     }
 
@@ -49,7 +50,7 @@ public class Main extends JFrame {
         Main jf = new Main();
         jf.setSize(w, h);//размер экрана
         jf.setUndecorated(false);//показать заголовок окна
-        jf.setTitle("TES IV");
+        jf.setTitle("TES VI");
         jf.setVisible(true);
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jf.createBufferStrategy(2);

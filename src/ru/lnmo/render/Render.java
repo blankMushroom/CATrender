@@ -2,6 +2,7 @@ package ru.lnmo.render;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -71,10 +72,10 @@ public class Render {
     }
     public static void rendertrialngle(BufferedImage img, int rgb,int x1, int y1, int x2, int y2, int x3, int y3){
         Random r=new Random();
-        int minx=Math.min(x1,Math.min(x2,x3));
-        int maxx=Math.max(x1,Math.max(x2,x3));
-        int miny=Math.min(y1,Math.min(y2,y3));
-        int maxy=Math.max(y1,Math.max(y2,y3));
+        int minx=Math.max(Math.min(x1,Math.min(x2,x3)),0);
+        int maxx=Math.min(Math.max(x1,Math.max(x2,x3)),Main.w);
+        int miny=Math.max(Math.min(y1,Math.min(y2,y3)),0);
+        int maxy=Math.min(Math.max(y1,Math.max(y2,y3)),Main.h);
         for (int i = minx; i <= maxx; i++) {
             for (int j = miny; j <= maxy; j++) {
                 if(isintriangle(x1,x2,x3,i,y1,y2,y3,j)){
@@ -85,11 +86,19 @@ public class Render {
         }
     }
     public static void renderobj(BufferedImage img,int rgb){
-        HashMap<Integer,int[]>vert=objReader.readv();
-        HashMap<Integer,int[]>tri=objReader.readt();
+        int cx=400;
+        int cy=200;
+        objReader r=new objReader();
+        HashMap<Integer,double[]>vert=r.readv();
+        HashMap<Integer,int[]>tri=r.readt();
+        Random rand=new Random();
         for (int i = 1; i <= tri.size(); i++) {
-            System.out.println(vert.get(tri.get(i)[0])[0]+" "+vert.get(tri.get(i)[0])[1]+" "+vert.get(tri.get(i)[1])[0]+" "+vert.get(tri.get(i)[1])[1]+" "+vert.get(tri.get(i)[2])[0]+" "+vert.get(tri.get(i)[2])[1]);
-            rendertrialngle(img,/*new Color(r.nextFloat(),r.nextFloat(),r.nextFloat()).getRGB()*/rgb,vert.get(tri.get(i)[0])[0],vert.get(tri.get(i)[0])[1],vert.get(tri.get(i)[1])[0],vert.get(tri.get(i)[1])[1],vert.get(tri.get(i)[2])[0],vert.get(tri.get(i)[2])[1]);
+            System.out.println(Arrays.toString(tri.get(i)));
+            System.out.println(vert.get(tri.get(i)[0])[0]+
+                    " "+vert.get(tri.get(i)[0])[1]+
+                    " "+vert.get(tri.get(i)[1])[0]+
+                    " "+vert.get(tri.get(i)[1])[1]+" "+vert.get(tri.get(i)[2])[0]+" "+vert.get(tri.get(i)[2])[1]);
+            Render.rendertrialngle(img,new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat()).getRGB(),(int)vert.get(tri.get(i)[0])[0]+cx,(int)vert.get(tri.get(i)[0])[1]+cy,(int)vert.get(tri.get(i)[1])[0]+cx,(int)vert.get(tri.get(i)[1])[1]+cy,(int)vert.get(tri.get(i)[2])[0]+cx,(int)vert.get(tri.get(i)[2])[1]+cy);
         }
     }
 }
