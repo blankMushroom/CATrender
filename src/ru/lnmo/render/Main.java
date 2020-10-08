@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
 
 public class Main extends JFrame {
 
@@ -23,17 +24,21 @@ public class Main extends JFrame {
         //Рисуем кадр.
         //Render.render(img);
         //Render.rendertrialngle(img,Color.BLACK.getRGB(),360,600,350,200,370,220);
-        int x0=100;
-        int y0=100;
-        int r=70;
-        int x1=170;
-        int y1=100;
-        int imax=3;
-        for (int i = 0; i < imax; i++) {
-            Render.rendertrialngle(img,Color.BLACK.getRGB(),x0,y0,x1,y1, (int) (x1+Math.cos((2*Math.PI)/imax)*r),(int) (y1+Math.sin((2*Math.PI)/imax)*r));
-            x1=(int) (x1+Math.cos((2*Math.PI)/imax)*r);
-            y1=(int) (y1+Math.sin((2*Math.PI)/imax)*r);
-        }
+        Random rand=new Random();
+        double x1=-1;
+        double y1=0;
+        double y2=0;
+        int x0=500;
+        int y0=300;
+        int r =300;
+        /*for (double i = -0.9; i < 1; i+=0.1) {
+            Render.rendertrialngle(img,new Color((float)(Math.signum(i) * i),(float)(Math.signum(i) * i),(float)(Math.signum(i) * i) ).getRGB(),x0,y0,(int)(x1*r)+x0,(int)(y1*r)+y0,(int)(i*r)+x0,(int)(Math.sqrt(1-i*i)*r)+y0);
+            Render.rendertrialngle(img,new Color((float)(Math.signum(i) * i),(float)(Math.signum(i) * i),(float)(Math.signum(i) * i)).getRGB(),x0,y0,(int)(x1*r)+x0,(int)(y2*r)+y0,(int)(i*r)+x0,(int)((-Math.sqrt(1-i*i))*r)+y0);
+            x1=i;
+            y1=Math.sqrt(1-i*i);
+            y2=-Math.sqrt(1-i*i);
+        }*/
+        Render.renderobj(img,Color.BLACK.getRGB());
         g.drawImage(img, 0, 0, null);
     }
 
@@ -44,7 +49,7 @@ public class Main extends JFrame {
         Main jf = new Main();
         jf.setSize(w, h);//размер экрана
         jf.setUndecorated(false);//показать заголовок окна
-        jf.setTitle("Моя супер программа");
+        jf.setTitle("TES IV");
         jf.setVisible(true);
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jf.createBufferStrategy(2);

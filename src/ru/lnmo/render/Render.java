@@ -2,6 +2,8 @@ package ru.lnmo.render;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Random;
 
 public class Render {
 
@@ -68,6 +70,7 @@ public class Render {
         return v >= 0 & u >= 0 & v + u <= 1;
     }
     public static void rendertrialngle(BufferedImage img, int rgb,int x1, int y1, int x2, int y2, int x3, int y3){
+        Random r=new Random();
         int minx=Math.min(x1,Math.min(x2,x3));
         int maxx=Math.max(x1,Math.max(x2,x3));
         int miny=Math.min(y1,Math.min(y2,y3));
@@ -75,9 +78,18 @@ public class Render {
         for (int i = minx; i <= maxx; i++) {
             for (int j = miny; j <= maxy; j++) {
                 if(isintriangle(x1,x2,x3,i,y1,y2,y3,j)){
-                    img.setRGB(i, j, rgb);
+
+                    img.setRGB(i, j,/*new Color(r.nextFloat(),r.nextFloat(),r.nextFloat()).getRGB()-new Color(i * j % 256, (i + j) % 256, (i * i + j * j) % 256).getRGB()*/rgb);
                 }
             }
+        }
+    }
+    public static void renderobj(BufferedImage img,int rgb){
+        HashMap<Integer,int[]>vert=objReader.readv();
+        HashMap<Integer,int[]>tri=objReader.readt();
+        for (int i = 1; i <= tri.size(); i++) {
+            System.out.println(vert.get(tri.get(i)[0])[0]+" "+vert.get(tri.get(i)[0])[1]+" "+vert.get(tri.get(i)[1])[0]+" "+vert.get(tri.get(i)[1])[1]+" "+vert.get(tri.get(i)[2])[0]+" "+vert.get(tri.get(i)[2])[1]);
+            rendertrialngle(img,/*new Color(r.nextFloat(),r.nextFloat(),r.nextFloat()).getRGB()*/rgb,vert.get(tri.get(i)[0])[0],vert.get(tri.get(i)[0])[1],vert.get(tri.get(i)[1])[0],vert.get(tri.get(i)[1])[1],vert.get(tri.get(i)[2])[0],vert.get(tri.get(i)[2])[1]);
         }
     }
 }
