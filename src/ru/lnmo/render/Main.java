@@ -15,11 +15,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
 
-public class Main extends JFrame implements MouseListener {
+public class Main extends JFrame implements MouseListener, KeyListener {
 
     static final int w = 1366;
     static final int h = 768;
-
     public static void draw(Graphics2D g) {
         //Создаем буффер в который рисуем кадр.
         BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
@@ -58,7 +57,7 @@ public class Main extends JFrame implements MouseListener {
         jf.setVisible(true);
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jf.createBufferStrategy(2);
-        jf.addMouseListener(jf);
+        jf.addKeyListener(jf);
         //в бесконечном цикле рисуем новый кадр
         while (true) {
             long frameLength = 1000 / 60; //пытаемся работать из рассчета  60 кадров в секунду
@@ -83,6 +82,24 @@ public class Main extends JFrame implements MouseListener {
     }
 
     public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyChar()=='d'){
+            Render.alphax+=0.05;
+        }
+        if (e.getKeyChar()=='a'){
+            Render.alphax-=0.05;
+        }
+        if (e.getKeyChar()=='w'){
+            Render.alphay+=0.05;
+        }
+        if (e.getKeyChar()=='s'){
+            Render.alphay-=0.05;
+        }
+
     }
 
     //Вызывается когда клавиша отпущена пользователем, обработка события аналогична keyPressed
@@ -91,8 +108,7 @@ public class Main extends JFrame implements MouseListener {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        System.out.println(Render.Zbuffer[e.getX()][e.getY()]);
+    public void mouseClicked(MouseEvent e){
     }
 
     @Override
