@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -13,7 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
 
-public class Main extends JFrame {
+public class Main extends JFrame implements MouseListener {
 
     static final int w = 1366;
     static final int h = 768;
@@ -40,6 +42,8 @@ public class Main extends JFrame {
         }*/
         Color c=new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255));
         Render.renderobj(img,c.getRGB());
+        g.setColor(Color.GREEN);
+        //g.fillRect(0, 0, w, h);
         g.drawImage(img, 0, 0, null);
     }
 
@@ -54,6 +58,7 @@ public class Main extends JFrame {
         jf.setVisible(true);
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jf.createBufferStrategy(2);
+        jf.addMouseListener(jf);
         //в бесконечном цикле рисуем новый кадр
         while (true) {
             long frameLength = 1000 / 60; //пытаемся работать из рассчета  60 кадров в секунду
@@ -62,6 +67,8 @@ public class Main extends JFrame {
             Graphics2D g = (Graphics2D) bs.getDrawGraphics();
             g.clearRect(0, 0, jf.getWidth(), jf.getHeight());
             draw(g);
+
+//            System.exit(0);
 
             bs.show();
             g.dispose();
@@ -80,6 +87,31 @@ public class Main extends JFrame {
 
     //Вызывается когда клавиша отпущена пользователем, обработка события аналогична keyPressed
     public void keyReleased(KeyEvent e) {
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        System.out.println(Render.Zbuffer[e.getX()][e.getY()]);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
 
     }
 }

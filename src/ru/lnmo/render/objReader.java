@@ -11,15 +11,6 @@ public class objReader {
     static HashMap<Integer, double[]> vert=new HashMap<>();
     static HashMap<Integer, int[]> tri=new HashMap<>();
     private File uaz=new File("uaz.obj");
-    Scanner s;
-
-    {
-        try {
-            s = new Scanner(uaz);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
     {
         int iv=1;
         int it=1;

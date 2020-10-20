@@ -7,7 +7,17 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Render {
-
+    static double[][] Zbuffer=new double[Main.w][Main.h];
+    static {
+        for (int i = 0; i < Zbuffer.length; i++) {
+            for (int j = 0; j < Zbuffer[0].length; j++) {
+                Zbuffer[i][j]=100_000;
+            }
+        }
+    }
+    static double alphax=0;
+    static double alphay=0;
+    static double alphaz=0;
     public static void render(BufferedImage img){
 //        img.setRGB(500, 300, new Color(255, 0, 200).getRGB());
         for (int i = 0; i < img.getWidth(); i++) {
@@ -70,7 +80,12 @@ public class Render {
         double v=-(x2*y1-x1*y2+x1*y4-x4*y1+x4*y2-x2*y4)/(x2*y3-x3*y2+x3*y1-x1*y3+x1*y2-x2*y1);
         return v >= 0 & u >= 0 & v + u <= 1;
     }
-    public static void rendertrialngle(BufferedImage img, int rgb,int x1, int y1, int x2, int y2, int x3, int y3){
+    public static double getZ(double x1,double x2,double x3,double x4,double y1,double y2,double y3,double y4,double z1,double z2,double z3){
+        double u=-(x1*y3-x3*y1+x4*y1-x1*y4+x3*y4-x4*y3)/(x2*y3-x3*y2+x3*y1-x1*y3+x1*y2-x2*y1);
+        double v=-(x2*y1-x1*y2+x1*y4-x4*y1+x4*y2-x2*y4)/(x2*y3-x3*y2+x3*y1-x1*y3+x1*y2-x2*y1);
+        return u*z2+v*z3+(1-u-v)*z1;
+    }
+    public static void rendertrialngle(BufferedImage img, int rgb,int x1, int y1, int x2, int y2, int x3, int y3,int z1,int z2,int z3){
         Random r=new Random();
         int minx=Math.max(Math.min(x1,Math.min(x2,x3)),0);
         int maxx=Math.min(Math.max(x1,Math.max(x2,x3)),Main.w);
@@ -79,8 +94,13 @@ public class Render {
         for (int i = minx; i <= maxx; i++) {
             for (int j = miny; j <= maxy; j++) {
                 if(isintriangle(x1,x2,x3,i,y1,y2,y3,j)){
-
-                    img.setRGB(i, j,/*new Color(r.nextFloat(),r.nextFloat(),r.nextFloat()).getRGB()-new Color(i * j % 256, (i + j) % 256, (i * i + j * j) % 256).getRGB()*/rgb);
+                    if(getZ(x1,x2,x3,i,y1,y2,y3,j,z1,z2,z3)<=Zbuffer[i][j]) {
+                        Zbuffer[i][j] = getZ(x1, x2, x3, i, y1, y2, y3, j, z1, z2, z3);
+                        img.setRGB(i, j,/*new Color(r.nextFloat(),r.nextFloat(),r.nextFloat()).getRGB()-new Color(i * j % 256, (i + j) % 256, (i * i + j * j) % 256).getRGB()*/rgb);
+                    } else {
+//                        System.out.println(getZ(x1,x2,x3,i,y1,y2,y3,j,z1,z2,z3)   +" " + Zbuffer[i][j] + " " + (-getZ(x1,x2,x3,i,y1,y2,y3,j,z1,z2,z3)  + Zbuffer[i][j]));
+//                        img.setRGB(i, j,Color.BLACK.getRGB());
+                    }
                 }
             }
         }
@@ -93,12 +113,30 @@ public class Render {
         HashMap<Integer,int[]>tri=r.readt();
         Random rand=new Random();
         for (int i = 1; i <= tri.size(); i++) {
-            System.out.println(Arrays.toString(tri.get(i)));
+            int x1=(int)vert.get(tri.get(i)[0])[0]+cx;
+            int x2=(int)vert.get(tri.get(i)[1])[0]+cx;
+            int x3=(int)vert.get(tri.get(i)[2])[0]+cx;
+            int y1=(int)vert.get(tri.get(i)[0])[1]+cy;
+            int y2=(int)vert.get(tri.get(i)[1])[1]+cy;
+            int y3=(int)vert.get(tri.get(i)[2])[1]+cy;
+            int z1=(int)vert.get(tri.get(i)[0])[2];
+            int z2=(int)vert.get(tri.get(i)[1])[2];
+            int z3=(int)vert.get(tri.get(i)[2])[2];
+
+            if (alphax!=0){
+
+            }
+            /*System.out.println(Arrays.toString(tri.get(i)));
             System.out.println(vert.get(tri.get(i)[0])[0]+
                     " "+vert.get(tri.get(i)[0])[1]+
                     " "+vert.get(tri.get(i)[1])[0]+
-                    " "+vert.get(tri.get(i)[1])[1]+" "+vert.get(tri.get(i)[2])[0]+" "+vert.get(tri.get(i)[2])[1]);
-            Render.rendertrialngle(img,new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat()).getRGB(),(int)vert.get(tri.get(i)[0])[0]+cx,(int)vert.get(tri.get(i)[0])[1]+cy,(int)vert.get(tri.get(i)[1])[0]+cx,(int)vert.get(tri.get(i)[1])[1]+cy,(int)vert.get(tri.get(i)[2])[0]+cx,(int)vert.get(tri.get(i)[2])[1]+cy);
+                    " "+vert.get(tri.get(i)[1])[1]+" "+vert.get(tri.get(i)[2])[0]+" "+vert.get(tri.get(i)[2])[1]);*/
+            Render.rendertrialngle(img,new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat()).getRGB(),x1,y1,x2,y2,x3,y3,z1,z2,z3);
+        }
+        for (int i = 0; i < Zbuffer.length; i++) {
+            for (int j = 0; j < Zbuffer[0].length; j++) {
+                Zbuffer[i][j]=Double.MAX_VALUE;
+            }
         }
     }
 }
